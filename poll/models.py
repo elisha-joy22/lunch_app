@@ -26,7 +26,7 @@ class Poll(models.Model):
     event_date_time = models.DateField()
     poll_text = models.CharField(max_length=255)
     ts = models.CharField(max_length=255, default=None)
-    channel_id = models.CharField(max_field=255)
+    channel_id = models.CharField(max_length=255)
     users = models.ManyToManyField(CustomUser, through='PollUser', related_name='polls')
     poll_closed = models.BooleanField(default=False)
 

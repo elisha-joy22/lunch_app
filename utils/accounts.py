@@ -14,7 +14,6 @@ def update_or_create_user(user):
     return returned_user
 
 
-
 def create_user_info(user_info_response):
     user_info = {
                     "slack_id" : user_info_response.get("https://slack.com/user_id"),

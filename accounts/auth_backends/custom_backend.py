@@ -16,7 +16,8 @@ class TokenBackend(BaseBackend):
                 payload = decode_jwt(token)
                 user = CustomUser.objects.get(email=payload.get('user'))
                 print("User found",user)
-                user.is_authenticated = True
+                user.is_authenticated = True       #If is_authenticated is lacking - attribute error may occur.
+                user.is_active = True              #If is_active is lacking - wrapped attribute error may occur.
                 return user
             except CustomUser.DoesNotExist:
                 print("TokenBackend-User not found!")

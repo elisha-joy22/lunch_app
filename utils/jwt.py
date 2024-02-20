@@ -1,12 +1,9 @@
-from django.conf import settings
 from rest_framework import exceptions
-
-import os
-import jwt
-from datetime import datetime,timedelta
 from dotenv import load_dotenv
 
-from accounts.models import CustomUser
+from datetime import datetime,timedelta
+import os
+import jwt
 
 load_dotenv()
 
@@ -43,7 +40,3 @@ def decode_jwt(token):
     except (ValueError, jwt.ExpiredSignatureError, jwt.DecodeError):
         raise exceptions.AuthenticationFailed('Invalid or expired token')
 
-    return
-    user_email = payload.get('user')
-    user = CustomUser.objects.get(email=user_email) 
-    return user if user else None
