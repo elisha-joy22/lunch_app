@@ -1,21 +1,24 @@
 from django.db import models
-from accounts.models import CustomUser
+
 import datetime
+
+from accounts.models import CustomUser
+
 
 # Create your models here.
 class PollManager(models.Manager):
     def active_polls(self):
-        return self.filter(end_date_time__gte=datetime.now())
+        return self.filter(is_active=True)
 
-    def is_poll_expired(self,ts):
-        poll = self.get(ts=ts)
+    def is_poll_expired(self,id):
+        poll = self.get(pk=id)
         return poll.end_date_time <= datetime.now()
 
-    def get_poll_count(self,ts):
-        return self.get(ts=ts).users.count()
+    def get_poll_count(self,id):
+        return self.get(pk=id).users.count()
     
-    def get_polled_users(self,ts):
-        poll = self.get(ts=ts)
+    def get_polled_users(self,id):
+        poll = self.get(pk=id)
         users_list = list(poll.users.all())
         return users_list
 
@@ -25,10 +28,8 @@ class Poll(models.Model):
     end_date_time = models.DateField()
     event_date_time = models.DateField()
     poll_text = models.CharField(max_length=255)
-    ts = models.CharField(max_length=255, default=None)
-    channel_id = models.CharField(max_length=255)
     users = models.ManyToManyField(CustomUser, through='PollUser', related_name='polls')
-    poll_closed = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     objects = PollManager()
 

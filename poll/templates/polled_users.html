@@ -1,0 +1,13 @@
+<h2>Poll</h2>
+<ul>
+    <p>Event Date: {{ poll.event_date_time }}</p>
+    <p>Poll Start Date: {{ active_poll.start_date_time }}</p>
+    <p>Poll End Date: {{ active_poll.end_date_time }}</p>
+
+    {% for user in users %}
+      <li>
+        <p>User Name: {{ user.name }}</p>
+        <p>Slack ID: {{ user.slack_id }}</p>
+      </li>
+    {% endfor %}
+  </ul>

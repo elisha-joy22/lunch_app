@@ -1,0 +1,10 @@
+<h2>Poll Information</h2>
+<p>Event Date : {{ poll.event_date_time }}</p>
+<p>Poll Start Date : {{ poll.start_date_time }}</p>
+<p>Poll End Date : {{ poll.end_date_time }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Send</button>
+</form>

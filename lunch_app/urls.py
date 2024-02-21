@@ -4,7 +4,8 @@ from lunch_app.health_check import health_check
 
 
 urlpatterns = [
-    path('health',health_check,name="health_check"),
+    path('health_check',health_check,name="health-check"),
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls'))
+    path('accounts/', include('accounts.urls')),
+    path('polls/', include('poll.urls'))
 ]

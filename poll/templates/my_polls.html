@@ -1,0 +1,10 @@
+<h2>My Polls</h2>
+
+<ul>
+    {% for id,event_date_time in poll_ids %}
+      <li>
+        <p>Event Date: {{ event_date_time }}</p>
+        <a href="{{url}}{{poll_id.id}}">Details</a>
+      </li>
+    {% endfor %}
+  </ul>

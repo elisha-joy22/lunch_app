@@ -1,0 +1,12 @@
+<h2>Active Polls</h2>
+<ul>
+  {% for active_poll in active_polls %}
+    <li>
+      <p>Event Date: {{ active_poll.event_date_time }}</p>
+      <p>Poll Start Date: {{ active_poll.start_date_time }}</p>
+      <p>Poll End Date: {{ active_poll.end_date_time }}</p>
+      <p>Your polled : {{ active_poll.users }}
+    </li>
+  {% endfor %}
+</ul>
+
