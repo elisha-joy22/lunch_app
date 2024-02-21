@@ -11,10 +11,11 @@ SECRET_KEY = 'django-insecure-px3ui_z*auwe6txjktx3s54xgstc**_m59&8q@)_9-r60vtd7n
 DEBUG = True
 
 ALLOWED_HOSTS = ["0a85-103-141-56-118.ngrok-free.app","127.0.0.1"]
-
+CSRF_TRUSTED_ORIGINS = ["https://0a85-103-141-56-118.ngrok-free.app"]
 
 # Application definition
 INSTALLED_APPS = [
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

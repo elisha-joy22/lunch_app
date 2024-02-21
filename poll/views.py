@@ -7,9 +7,11 @@ from rest_framework.permissions import IsAdminUser
 from poll.forms import PollResponseForm,CreatePollForm
 from poll.models import Poll
 from poll.serializers import PollSerializer
+from accounts.mixins import TokenAuthRequiredMixin
 
 
-class PollModelViewSet(ModelViewSet):
+
+class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
 
@@ -31,7 +33,6 @@ class PollModelViewSet(ModelViewSet):
         else:
             form = CreatePollForm()
         return render(request, 'create_poll.html', {'form': form})
-
 
 
     @action(detail=False, methods=['get'])
@@ -60,8 +61,8 @@ class PollModelViewSet(ModelViewSet):
                 elif poll_response=="False":
                     poll.users.remove(request.user)
                     message = "Your polled no successfully"
-                return render(request,"poll_response.html",{"message":message})
-            return render(request,"poll_response.html",{"error":message})
+                return render(request,"response.html",{"message":message})
+            return render(request,"response.html",{"error":message})
 
 
     @action(detail=False, methods=['get'])
@@ -75,5 +76,6 @@ class PollModelViewSet(ModelViewSet):
     @action(detail=False, methods=['get'])
     def my_polls(self,request):
         poll_ids = self.queryset.filter(users=request.user).values_list('id','event_date_time')
-        url = f"https://0a85-103-141-56-118.ngrok-free.app/polls/"
+        url = f"https://0a85-103-141-56-118.ngrok-free.app/polls/poll?poll_id="
+        print("my_polls",poll_ids)
         return render(request, "my_polls.html", {"url":url,"poll_ids":poll_ids})

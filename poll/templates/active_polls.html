@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Active Polls</h2>
 <ul>
   {% for active_poll in active_polls %}
@@ -10,3 +14,4 @@
   {% endfor %}
 </ul>
 
+{% endblock %}

@@ -1,3 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
 <h2>Poll Information</h2>
 <p>Event Date : {{ poll.event_date_time }}</p>
 <p>Poll Start Date : {{ poll.start_date_time }}</p>
@@ -8,3 +13,5 @@
     {{ form.as_p }}
     <button type="submit">Send</button>
 </form>
+
+{% endblock %}

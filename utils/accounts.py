@@ -6,8 +6,7 @@ def update_or_create_user(user):
         print('inside update_or_create user')
         returned_user = CustomUser.objects.update_or_create(
                                                 slack_id=user.get('slack_id'),                                        #returns boolean true if new obj created
-                                                defaults=user
-                        )[0]
+                                                defaults=user)[0]
     except CustomUser.DoesNotExist:
         print ("{'error':'User creation falied!!'}")
     

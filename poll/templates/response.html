@@ -1,5 +1,11 @@
+{% extends 'base.html' %}
 
-{% if response.error %}
-    <h3>{{response.error}}</h3>
+{% block content %}
+
+
+{% if error %}
+    <h3>{{error}}</h3>
 {%endif%}
-<h3>{{response.message}}</h3>
+<h3>{{message}}</h3>
+
+{% endblock %}

@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Poll</h2>
 <ul>
     <p>Event Date: {{ poll.event_date_time }}</p>
@@ -11,3 +15,5 @@
       </li>
     {% endfor %}
   </ul>
+
+  {% endblock %}
