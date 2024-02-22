@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404
-
+from django.conf import settings
 from rest_framework.viewsets import ModelViewSet 
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -10,6 +10,7 @@ from poll.serializers import PollSerializer
 from accounts.mixins import TokenAuthRequiredMixin
 
 
+CONTEXT = settings.CONTEXT
 
 class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
     queryset = Poll.objects.all()
@@ -22,23 +23,27 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         return super().get_permissions()
 
     def create(request):
+        context = CONTEXT
         if request.method == 'POST':
             form = CreatePollForm(request.POST)
-            message = "An error occured while creating the poll"
             if form.is_valid():
                 poll = form.save()
-                message = f"Poll created successfully with poll id - {poll.pk}"
-                return render(request,'request.html',{"message":message})
-            return render(request,'request.html',{"error":message})
+                context["message"] = f"Poll created successfully with poll id - {poll.pk}"
+                return render(request,'request.html',context)
+            context["error"] = "An error occured while creating the poll"
+            return render(request,'request.html',context)
         else:
             form = CreatePollForm()
-        return render(request, 'create_poll.html', {'form': form})
+            context["form"] = form
+        return render(request, 'create_poll.html', context)
 
 
     @action(detail=False, methods=['get'])
     def active_polls(self, request):
         active_polls = self.queryset.filter(is_active=True)
-        return render(request, 'active_polls.html', {'active_polls': active_polls})
+        context = CONTEXT
+        context["active_polls"] = active_polls
+        return render(request, 'active_polls.html', context)
 
 
     @action(detail=False, methods=['get','post'])
@@ -46,13 +51,15 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_id = request.query_params.get('poll_id')
         poll = get_object_or_404(Poll,pk=poll_id)
         
+        context = CONTEXT
         if request.method=="GET":
             form = PollResponseForm()
-            return render(request,"poll_form.html",{"form":form,"poll":poll})
+            context["form"] = form
+            context["poll"] = poll
+            return render(request,"poll_form.html",context)
         
         elif request.method=="POST":
             form = PollResponseForm(request.POST)
-            message = "An error occured while submitting your response!"
             if form.is_valid():
                 poll_response = form.cleaned_data['response']
                 if poll_response=="True":
@@ -61,8 +68,10 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
                 elif poll_response=="False":
                     poll.users.remove(request.user)
                     message = "Your polled no successfully"
-                return render(request,"response.html",{"message":message})
-            return render(request,"response.html",{"error":message})
+                context["message"] = message
+                return render(request,"response.html",context)
+            context["error"] = "An error occured while submitting your response!"
+            return render(request,"response.html",context)
 
 
     @action(detail=False, methods=['get'])
@@ -70,12 +79,15 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_id = request.query_params.get('poll_id')
         poll = get_object_or_404(Poll,pk=poll_id)
         polled_users = poll.users.all()        
-        return render(request, "polled_users.html", {"poll":poll,"users":polled_users})  
+        context = CONTEXT
+        context["poll"] = poll
+        context["users"] = polled_users
+        return render(request, "polled_users.html", context)  
 
 
     @action(detail=False, methods=['get'])
     def my_polls(self,request):
         poll_ids = self.queryset.filter(users=request.user).values_list('id','event_date_time')
-        url = f"https://0a85-103-141-56-118.ngrok-free.app/polls/poll?poll_id="
-        print("my_polls",poll_ids)
-        return render(request, "my_polls.html", {"url":url,"poll_ids":poll_ids})
+        context = CONTEXT
+        context["poll_ids"] = poll_ids
+        return render(request, "my_polls.html", context)

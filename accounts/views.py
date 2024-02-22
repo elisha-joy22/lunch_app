@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.http import HttpResponseRedirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.conf import settings
 from slack_sdk.oauth import AuthorizeUrlGenerator
 from slack_sdk.oauth.state_store import FileOAuthStateStore
 from slack_sdk.web import WebClient
@@ -21,6 +22,7 @@ ENV = os.getenv("ENV")
 SLACK_CLIENT_ID = os.getenv("SLACK_CLIENT_ID", "")
 SLACK_CLIENT_SECRET = os.getenv("SLACK_CLIENT_SECRET", "")
 SLACK_REDIRECT_URI = os.getenv("SLACK_REDIRECT_URI_DEV", "")
+CONTEXT = settings.CONTEXT
 
 if ENV.lower().startswith("prod"):
     SLACK_REDIRECT_URI = os.getenv("SLACK_REDIRECT_URI_PROD", "")
@@ -42,7 +44,7 @@ class SlackOuthStartView(APIView):
         print("StartView User",request.user)
         state = state_store.issue()
         url = authorize_url_generator.generate(state=state)
-        return Response({'url':url})
+        return HttpResponseRedirect(redirect_to=url)
 
 
 class SlackOuthRedirectView(APIView):
@@ -83,21 +85,49 @@ class SlackOuthRedirectView(APIView):
             user_data = update_or_create_user(user=user_info)
             serialized_user_data = UserSerializer(user_data).data
             print(serialized_user_data)
-            #update_or_assign_token_response = TokenSerializer(update_or_assign_auth_token(user=user_data,token=access_token)).data
             jwt = generate_jwt(serialized_user_data)
             print(jwt)
         except Exception as e:
             print("Error",e)
             return Response({"message":"success","data":"User creation failed!!"})
-        response = Response({"message":"success","data":serialized_user_data}) 
+        response = redirect('home')
         return set_jwt_cookie(response,jwt)
     
 
 
 class UserProfileView(TokenAuthRequiredMixin,APIView):
     def get(self,request):
-        print("User in Profile view",request.user)
         user = request.user
-        print(request.user.slack_id)
         serialised_user = UserSerializer(user)
-        return Response({"User-profile":serialised_user.data})
+        context = CONTEXT
+        context["user"] = serialised_user.data
+        return render(request, "profile.html", context)
+    
+
+class LogoutView(TokenAuthRequiredMixin,APIView):
+    def get(self,request):
+        user = request.user
+        auth_token = request.COOKIES.get('auth_token')
+        serialised_user = UserSerializer(user)
+        
+        # delete the auth token cookie
+        response = redirect("user-sign-in")
+        response.delete_cookie('auth_token')
+        return response
+
+
+class HomeView(TokenAuthRequiredMixin,APIView):
+    def get(self,request):
+        context = CONTEXT
+        user = request.user
+        serialised_user = UserSerializer(user)
+        context["user"] = serialised_user.data
+        return render(request,'base.html',context)
+
+
+class SignInView(APIView):
+    def get(self,request):
+        context = CONTEXT
+        if str(request.user)!="AnonymousUser":
+            return redirect('user-profile')
+        return render(request,'sign_in.html',context)        

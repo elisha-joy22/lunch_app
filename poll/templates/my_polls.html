@@ -9,7 +9,7 @@
     {% for id,event_date_time in poll_ids %}
       <li>
         <p>Event Date: {{ event_date_time }}</p>
-        <a href="{{url}}{{id}}">Details</a>
+        <a href="{{basic_url}}polls/poll?poll_id={{id}}">Details</a>
       </li>
     {% endfor %}
   </ul>

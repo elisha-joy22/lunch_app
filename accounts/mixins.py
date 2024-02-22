@@ -6,6 +6,6 @@ class TokenAuthRequiredMixin:
     def dispatch(self,request,*args,**kwargs):
         print("TokenAuthRequiredMixin")
         if not request.user.is_authenticated:
-            sign_url = reverse('oauth-start')
+            sign_url = reverse('user-sign-in')
             return redirect(sign_url)
         return super().dispatch(request,*args,**kwargs)
