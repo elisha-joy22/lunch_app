@@ -1,12 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    .poll-container {
+        border: 2px solid #007bff; /* Add border styling */
+        padding: 10px; /* Add padding for better spacing */
+        margin-bottom: 20px; /* Add margin to separate each poll container */
+        max-width: 400px; /* Reduce the container width */
+        margin-left: 0%; /* Center the container horizontally */
+        margin-right: auto; /* Center the container horizontally */
+      }
+</style>
 
 <div class="profile-info">
     <h2>My Profile</h2>
-    <img src="{{ user.picture_url }}" alt="User Image">
-    <p>Name: {{ user.name }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Slack_Id: {{ user.slack_id }}</p>
+    <div class="poll-container">
+        <img src="{{ user.picture_url }}" alt="User Image">
+        <p>Name: {{ user.name }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Slack_Id: {{ user.slack_id }}</p>
+    </div>    
 </div>
 {% endblock %}

@@ -2,16 +2,61 @@
 
 {% block content %}
 
+<style>
+    /* Custom font style */
+    body {
+        font-family: 'Roboto', sans-serif; /* Use Roboto or any other desired font */
+    }
+
+    .poll-container {
+        border: 2px  #007bff; /* Add border styling */
+        padding: 10px; /* Add padding for better spacing */
+        margin-bottom: 20px; /* Add margin to separate each poll container */
+        max-width: 400px; /* Reduce the container width */
+        margin-left: 0%; /* Center the container horizontally */
+        margin-right: auto; /* Center the container horizontally */
+        background-color: #9AD0C2
+    }
+    
+    /* Style for the form button */
+    .submit-btn {
+        background-color: #007bff; /* Bootstrap primary color */
+        color: white; /* Text color */
+        border: none; /* Remove border */
+        padding: 10px 20px; /* Add padding */
+        border-radius: 5px; /* Add border-radius for rounded corners */
+        cursor: pointer; /* Add pointer cursor on hover */
+        transition: background-color 0.3s; /* Add transition effect */
+    }
+
+    .submit-btn:hover {
+        background-color: #0056b3; /* Darker shade of primary color on hover */
+    }
+
+    /* Style for poll information */
+    p {
+        font-size: 16px; /* Set font size for regular text */
+    }
+
+    /* Style for poll information values */
+    .poll-value {
+        font-weight: 10%; /* Make the values bold */
+        font-size: 18px; /* Set font size for values */
+        margin-left: 10px; /* Add spacing after the colon */
+    }
+</style>
 
 <h2>Poll Information</h2>
-<p>Event Date : {{ poll.event_date_time }}</p>
-<p>Poll Start Date : {{ poll.start_date_time }}</p>
-<p>Poll End Date : {{ poll.end_date_time }}</p>
+<div class="poll-container">
+<p>Event Date: <span class="poll-value">{{ poll.event_date_time }}</span></p>
+<p>Poll Start Date: <span class="poll-value">{{ poll.start_date_time }}</span></p>
+<p>Poll End Date: <span class="poll-value">{{ poll.end_date_time }}</span></p>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Send</button>
+    <button type="submit" class="submit-btn">Send</button> <!-- Add class for styling -->
 </form>
-
+</div>
 {% endblock %}
+
