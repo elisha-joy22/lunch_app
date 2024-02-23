@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{% if active_polls %}
 <h2>Active Polls</h2>
 <ul>
   {% for active_poll in active_polls %}
@@ -9,9 +10,12 @@
       <p>Event Date: {{ active_poll.event_date_time }}</p>
       <p>Poll Start Date: {{ active_poll.start_date_time }}</p>
       <p>Poll End Date: {{ active_poll.end_date_time }}</p>
-      <p>Your polled : {{ active_poll.users }}
     </li>
+    <a href="{{basic_url}}polls/poll?poll_id={{active_poll.id}}">Details</a>
   {% endfor %}
 </ul>
+{% else %}
+  <p>There is no active polls at the moment.</p>
+{% endif %}
 
 {% endblock %}

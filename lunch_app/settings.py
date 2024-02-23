@@ -9,8 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-px3ui_z*auwe6txjktx3s54xgstc**_m59&8q@)_9-r60vtd7n'
 
 DEBUG = True
-ALLOWED_HOSTS = ["2162-103-141-56-118.ngrok-free.app","127.0.0.1"]
-CSRF_TRUSTED_ORIGINS = ["https://2162-103-141-56-118.ngrok-free.app"]
+ALLOWED_HOSTS = ["fe8a-103-141-56-118.ngrok-free.app","127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["https://fe8a-103-141-56-118.ngrok-free.app"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -30,7 +30,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-#    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 #    'accounts.middlewares.JWTAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

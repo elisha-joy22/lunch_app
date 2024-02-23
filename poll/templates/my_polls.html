@@ -2,16 +2,21 @@
 
 {% block content %}
 
+{% if poll_ids %}
+  <h2>My Polls</h2>
 
-<h2>My Polls</h2>
-
-<ul>
-    {% for id,event_date_time in poll_ids %}
+  <ul>
+    {% for id, event_date_time in poll_ids %}
       <li>
         <p>Event Date: {{ event_date_time }}</p>
-        <a href="{{basic_url}}polls/poll?poll_id={{id}}">Details</a>
+        <a href="{{ basic_url }}polls/poll?poll_id={{ id }}">Details</a>
       </li>
+      <a href="{{ basic_url }}polls/download_unique_image?poll_id={{ id }}" class="btn btn-primary">Download unique image</a>
     {% endfor %}
   </ul>
+{% else %}
+  <p>Sorry! You have no polls at the moment.</p>
+{% endif %}
 
-  {% endblock %}
+{% endblock %}
+
