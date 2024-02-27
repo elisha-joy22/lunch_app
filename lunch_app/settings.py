@@ -1,5 +1,8 @@
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
+from celery.schedules import crontab
+
 import os
 
 load_dotenv()
@@ -9,8 +12,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-px3ui_z*auwe6txjktx3s54xgstc**_m59&8q@)_9-r60vtd7n'
 
 DEBUG = True
-ALLOWED_HOSTS = ["93c8-117-251-53-4.ngrok-free.app","127.0.0.1"]
-CSRF_TRUSTED_ORIGINS = ["https://93c8-117-251-53-4.ngrok-free.app"]
+ALLOWED_HOSTS = ["46bf-103-141-56-118.ngrok-free.app","127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["https://46bf-103-141-56-118.ngrok-free.app"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -104,4 +107,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CONTEXT = {
     "basic_url":os.environ.get("BASIC_URL")
+}
+
+
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+
+CELERY_BEAT_SCHEDULE = {
+    'run-at-18-12': {
+    'task': 'poll.tasks.create_scheduled_poll',
+    'schedule': crontab(minute=18, hour=18, day_of_week='0-4'),  # Run at 6:12 PM from Sunday to Thursday
+    },
 }
