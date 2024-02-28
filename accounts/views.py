@@ -90,7 +90,7 @@ class SlackOuthRedirectView(APIView):
         except Exception as e:
             print("Error",e)
             return Response({"message":"success","data":"User creation failed!!"})
-        response = redirect('home')
+        response = redirect('user-profile')
         return set_jwt_cookie(response,jwt)
     
 
@@ -116,18 +116,10 @@ class LogoutView(TokenAuthRequiredMixin,APIView):
         return response
 
 
-class HomeView(TokenAuthRequiredMixin,APIView):
-    def get(self,request):
-        context = CONTEXT
-        user = request.user
-        serialised_user = UserSerializer(user)
-        context["user"] = serialised_user.data
-        return render(request,'base.html',context)
-
 
 class SignInView(APIView):
     def get(self,request):
         context = CONTEXT
-        if str(request.user)!="AnonymousUser":
+        if str(request.user)!="AnonymousUser" and not None:
             return redirect('user-profile')
         return render(request,'sign_in.html',context)        

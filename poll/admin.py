@@ -8,15 +8,12 @@ from poll.models import Poll
 
 class PollAdmin(admin.ModelAdmin):
     list_display = ( 'event_date_time', 'poll_text', 'poll_count')
-    readonly_fields = ('event_date_time', 'poll_text','poll_count')
+    readonly_fields = ('poll_count',)
     actions = ['generate_pdf']
 
 
     def poll_count(self,obj):
         return Poll.objects.get_poll_count(obj.id)
-
-
-
 
 
     def generate_pdf(self, request, queryset):
@@ -25,9 +22,8 @@ class PollAdmin(admin.ModelAdmin):
 
         # Create canvas
         c = canvas.Canvas(response, pagesize=letter)
-
-        # Add Poll ID and Event Date to canvas
         y = 750
+        
         for poll in queryset:
             c.drawString(100, y, f'Poll ID: {poll.id}')
             c.drawString(100, y-20, f'Event Date: {poll.event_date_time}')

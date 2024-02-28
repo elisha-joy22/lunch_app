@@ -3,59 +3,56 @@
 {% block content %}
 
 <style>
-    /* Custom font style */
+
     body {
-        font-family: 'Roboto', sans-serif; /* Use Roboto or any other desired font */
+        font-family: 'Roboto', sans-serif;
     }
 
     .poll-container {
-        border: 2px  #007bff; /* Add border styling */
-        padding: 10px; /* Add padding for better spacing */
-        margin-bottom: 20px; /* Add margin to separate each poll container */
-        max-width: 400px; /* Reduce the container width */
-        margin-left: 0%; /* Center the container horizontally */
-        margin-right: auto; /* Center the container horizontally */
+        border: 2px  #007bff; 
+        padding: 10px; 
+        margin-bottom: 20px; 
+        max-width: 400px; 
+        margin-left: 0%; 
+        margin-right: auto; 
         background-color: #9AD0C2
     }
     
-    /* Style for the form button */
+
     .submit-btn {
-        background-color: #007bff; /* Bootstrap primary color */
-        color: white; /* Text color */
-        border: none; /* Remove border */
-        padding: 10px 20px; /* Add padding */
-        border-radius: 5px; /* Add border-radius for rounded corners */
-        cursor: pointer; /* Add pointer cursor on hover */
-        transition: background-color 0.3s; /* Add transition effect */
+        background-color: #007bff; 
+        color: white; 
+        border: none; 
+        padding: 10px 20px; 
+        border-radius: 5px; 
+        cursor: pointer; 
+        transition: background-color 0.3s; 
     }
 
     .submit-btn:hover {
-        background-color: #0056b3; /* Darker shade of primary color on hover */
+        background-color: #0056b3; 
     }
 
-    /* Style for poll information */
     p {
-        font-size: 16px; /* Set font size for regular text */
+        font-size: 16px; 
     }
 
-    /* Style for poll information values */
     .poll-value {
-        font-weight: 10%; /* Make the values bold */
-        font-size: 18px; /* Set font size for values */
-        margin-left: 10px; /* Add spacing after the colon */
+        font-weight: 10%; 
+        font-size: 18px; 
+        margin-left: 10px; 
     }
 </style>
 
-<h2>Poll Information</h2>
+<h3>{{ poll.poll_text }}</h3>
 <div class="poll-container">
 <p>Event Date: <span class="poll-value">{{ poll.event_date_time }}</span></p>
-<p>Poll Start Date: <span class="poll-value">{{ poll.start_date_time }}</span></p>
 <p>Poll End Date: <span class="poll-value">{{ poll.end_date_time }}</span></p>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="submit-btn">Send</button> <!-- Add class for styling -->
+    <button type="submit" class="submit-btn">Send</button> 
 </form>
 </div>
 {% endblock %}

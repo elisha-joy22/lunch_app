@@ -12,8 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-px3ui_z*auwe6txjktx3s54xgstc**_m59&8q@)_9-r60vtd7n'
 
 DEBUG = True
-ALLOWED_HOSTS = ["46bf-103-141-56-118.ngrok-free.app","127.0.0.1"]
-CSRF_TRUSTED_ORIGINS = ["https://46bf-103-141-56-118.ngrok-free.app"]
+
+ALLOWED_HOSTS = eval(os.getenv("ALLOWED_HOSTS"))
+CSRF_TRUSTED_ORIGINS = eval(os.getenv("CSRF_TRUSTED_ORIGINS"))
 
 # Application definition
 INSTALLED_APPS = [

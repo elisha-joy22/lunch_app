@@ -6,7 +6,7 @@ from poll.views import PollModelViewSet
 
 router = DefaultRouter()
 
-router.register(r'',PollModelViewSet)
+router.register(r'',PollModelViewSet,basename='poll')
 
 urlpatterns = [
     path('', include(router.urls)),

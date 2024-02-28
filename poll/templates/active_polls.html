@@ -2,23 +2,22 @@
 
 {% block content %}
 <style>
-  /* CSS styles for poll containers */
   .poll-container {
-    border: 2px solid #007bff; /* Add border styling */
-    padding: 10px; /* Add padding for better spacing */
-    margin-bottom: 20px; /* Add margin to separate each poll container */
-    max-width: 400px; /* Reduce the container width */
-    margin-left: 0%; /* Center the container horizontally */
-    margin-right: auto; /* Center the container horizontally */
+    border: 2px solid #007bff; 
+    padding: 10px; 
+    margin-bottom: 20px;
+    max-width: 400px; 
+    margin-left: 0%; 
+    margin-right: auto; 
   }
 </style>
 
 {% if active_polls %}
 <h2>Active Polls</h2>
   {% for active_poll in active_polls %}
-    <div class="poll-container"> <!-- Add a class for styling -->
-        <p>Event Date: {{ active_poll.event_date_time }}</p>
-        <p>Poll Start Date: {{ active_poll.start_date_time }}</p>
+    <div class="poll-container">
+        <p>{{ active_poll.poll_text }}</p>  
+        <p>Event Date:-{{ active_poll.event_date_time }}</p>
         <p>Poll End Date: {{ active_poll.end_date_time }}</p>
       <a href="{{basic_url}}polls/poll?poll_id={{active_poll.id}}">Details</a>
     </div>
