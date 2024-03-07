@@ -1,10 +1,10 @@
 body {
-    background-color: #CDFADB
+    font-family: 'Roboto', sans-serif;
+    background-color: #edfcf2
 }
 
 .navbar {
     margin-bottom: 20px;
-    /* Added margin-bottom to create space between navbar and content */
     background-color: #211C6A;
 }
 
@@ -13,12 +13,10 @@ body {
     width: 40px;
     height: 40px;
     margin-right: 10px;
-    /* Adjusted margin-right for better alignment with the Logout link */
 }
 
 @media (max-width: 992px) {
     .profile-image {
         margin-left: 10px;
-        /* Adjusted margin-left to place the profile icon to the left of the hamburger icon */
     }
 }
