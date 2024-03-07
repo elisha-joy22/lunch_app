@@ -1,0 +1,20 @@
+.poll-container {
+    border: 2px #007bff; 
+    padding: 10px; 
+    margin-bottom: 20px; 
+    max-width: 400px; 
+    margin-left: 0%; 
+    margin-right: auto;
+    background-color:#96E9C6
+}
+
+.details {
+    margin-bottom: 10px;
+    margin-right: 20px;
+    padding-left: 26%;
+}
+
+.event-details {
+    display: flex;
+    align-items: center;
+}

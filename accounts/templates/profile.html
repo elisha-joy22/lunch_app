@@ -1,17 +1,8 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<style>
-    .poll-container {
-        border: 2px solid #007bff;
-        padding: 10px; 
-        margin-bottom: 20px; 
-        max-width: 400px; 
-        margin-left: 0%; 
-        margin-right: auto; 
-      }
-</style>
 
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 <div class="profile-info">
     <h2>My Profile</h2>
     <div class="poll-container">

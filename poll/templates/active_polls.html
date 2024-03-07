@@ -1,16 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<style>
-  .poll-container {
-    border: 2px solid #007bff; 
-    padding: 10px; 
-    margin-bottom: 20px;
-    max-width: 400px; 
-    margin-left: 0%; 
-    margin-right: auto; 
-  }
-</style>
+<link rel="stylesheet" href="{% static 'css/active_polls.css' %}">
 
 {% if active_polls %}
 <h2>Active Polls</h2>

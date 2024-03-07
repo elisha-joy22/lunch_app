@@ -1,32 +1,8 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<style>
-  /* CSS styles for poll containers */
-  .poll-container {
-    border: 2px #007bff; /* Add border styling */
-    padding: 10px; /* Add padding for better spacing */
-    margin-bottom: 20px; /* Add margin to separate each poll container */
-    max-width: 400px; /* Reduce the container width */
-    margin-left: 0%; /* Center the container horizontally */
-    margin-right: auto; /* Center the container horizontally */
-    background-color:#96E9C6
-  }
 
-  /* Add space between hyperlinks */
-  .details {
-    margin-bottom: 10px;
-    margin-right: 20px;
-    padding-left: 26%;
-  }
-
-  /* Make event date and details inline */
-  .event-details {
-    display: flex;
-    align-items: center;
-  }
-
-</style>
+<link rel="stylesheet" href="{% static 'css/my_polls.css' %}">
 
 {% if poll_ids %}
   <h2>My Polls</h2>

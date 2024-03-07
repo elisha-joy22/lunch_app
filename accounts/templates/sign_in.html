@@ -6,10 +6,6 @@
     <title>Entri- LUNCH</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom CSS -->
-    <style>
-        /* You can add your custom styles here */
-    </style>
 </head>
 <body>
 
@@ -28,16 +24,10 @@
                     <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-center">
                       <h2 class="fw-bold mb-2 text-uppercase"><b>Entri Lunch</b></h2>
                     </div>
-                    <br />
-          
-                    <div id="message" style="text-align: center;"></div>
-          
-
-                  <!-- Reference input -->
+                    <br />              
                   <div class="form-outline mb-4 text-center">
                     <h5>Welcome to Entri Lunch.</h5>
                   </div>
-                  <!-- Reference input -->
                   <div class="form-outline mb-4 text-center">
                     <h5>Sign in with Slack to continue.</h5>
                   </div>
@@ -53,47 +43,5 @@
 
 
 </div>
-
-<!-- Bootstrap JS and jQuery (Optional) -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-  $(document).ready(function(){
-      $('#validator').submit(function(event){
-          event.preventDefault();
-          
-          // Clear any messages currently showing
-          $('#message').html('');
-          
-          // Show loading icon
-          $('#message').html('<img src="loading.gif" />');
-          
-          var aws_restAPI_url = 'https://ww4k963aei.execute-api.ap-south-1.amazonaws.com/default/entri-course-certficate-generator';
-          var domain_url = 'https://certificate.entri.app'
-          
-          
-          console.log("Request Data:", requestData); // Log the requestData to ensure it's correct
-          
-          $.ajax({
-              url: aws_restAPI_url,
-              type: 'POST',
-              contentType: 'application/json', // Set Content-Type header to indicate JSON data
-              dataType: 'json',
-              data: JSON.stringify(requestData), // Convert data to JSON string
-              success: function(response) {
-                  // Handle success response
-                  console.warn(response);
-                  $('#message').html('<div class="alert alert-success" role="alert">Success! 🎉 <a href="'+ domain_url +'/'+ response.certificate_name +'" target="_blank">View</a> Certificate!</div>');
-              },
-              error: function(xhr, status, error) {
-                  // Handle error response
-                  $('#message').html('<div class="alert alert-danger" role="alert">Sorry! '+ xhr.responseText +' 😞</div>');
-                  console.warn(xhr);
-              }
-          });
-      });
-  });
-</script>
-
 </body>
 </html>
