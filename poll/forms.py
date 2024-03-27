@@ -1,6 +1,6 @@
 from typing import Any
 from django import forms
-from poll.models import Poll
+from poll.models import Poll,ScheduledPoll
 
 class CreatePollForm(forms.ModelForm):
     start_date_time = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -34,4 +34,12 @@ class PollResponseForm(forms.ModelForm):
         fields = []
 
 
-    
+class ScheduledPollForm(forms.ModelForm):
+    class Meta:
+        model = ScheduledPoll
+        fields = ['name','poll_start_time','poll_end_time','event_time','days_until_event_after_poll','poll_text','crontab']
+        widgets = {
+            'poll_start_time': forms.TimeInput(attrs={'class': 'timepicker'}),
+            'poll_end_time': forms.TimeInput(attrs={'class': 'timepicker'}),
+            'event_time': forms.TimeInput(attrs={'class': 'timepicker'})
+        }

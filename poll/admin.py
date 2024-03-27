@@ -4,7 +4,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
-from poll.models import Poll
+from poll.models import Poll,ScheduledPoll
+from poll.forms import ScheduledPollForm
+
 
 class PollAdmin(admin.ModelAdmin):
     list_display = ( 'event_date_time', 'poll_text', 'poll_count')
@@ -59,5 +61,8 @@ class PollAdmin(admin.ModelAdmin):
     generate_pdf.short_description = "PDF of Polled Users"
 
 
+class ScheduledPollAdmin(admin.ModelAdmin):
+    form = ScheduledPollForm
 
 admin.site.register(Poll, PollAdmin)
+admin.site.register(ScheduledPoll,ScheduledPollAdmin)

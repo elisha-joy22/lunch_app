@@ -26,8 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_celery_beat',
     'poll.apps.PollConfig',
-    'accounts.apps.AccountsConfig'
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,10 +114,4 @@ CONTEXT = {
 
 CELERY_TIMEZONE = 'Asia/Kolkata'
 
-
-CELERY_BEAT_SCHEDULE = {
-    'run-at-18-12': {
-    'task': 'poll.tasks.create_scheduled_poll',
-    'schedule': crontab(minute=18, hour=18, day_of_week='0-4'),  # Run at 6:12 PM from Sunday to Thursday
-    },
-}
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
