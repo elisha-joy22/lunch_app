@@ -4,6 +4,9 @@ from django.http.response import HttpResponse,HttpResponseRedirect
 from rest_framework.viewsets import ModelViewSet 
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
+from django.utils import timezone
+import pytz
+
 
 from poll.forms import PollResponseForm
 from poll.models import Poll
@@ -40,6 +43,9 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         context = CONTEXT
         if request.method=="GET":
             form = PollResponseForm()
+            user_polled_status = poll.users.filter(id=request.user.id).exists()
+            if user_polled_status==True:
+                form.fields.get('response').initial = user_polled_status
             context["form"] = form
             context["poll"] = poll
             return render(request,"poll_form.html",context)
@@ -59,9 +65,16 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def my_polls(self,request):
-        poll_ids = self.queryset.filter(users=request.user).values_list('id','event_date_time','is_active')
+        poll_ids = self.queryset.filter(users=request.user).values_list('id','end_date_time','event_date_time','is_active').order_by('-start_date_time')
         context = CONTEXT
         context["poll_ids"] = poll_ids
+        datetime_now_utc = timezone.now()
+        timezone_kolkata = pytz.timezone('Asia/Kolkata')
+        datetime_now_kolkata = datetime_now_utc.astimezone(timezone_kolkata)
+
+        context["datetime_now"] = datetime_now_kolkata
+        print("now", context["datetime_now"])
+        
         return render(request, "my_polls.html", context)
 
 

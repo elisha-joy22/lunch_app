@@ -6,7 +6,7 @@ class CreatePollForm(forms.ModelForm):
     start_date_time = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
     end_date_time = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
     event_date_time = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
-
+    
     class Meta:
         model = Poll
         fields = ['start_date_time', 'end_date_time', 'event_date_time', 'poll_text']
