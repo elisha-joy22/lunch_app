@@ -7,8 +7,9 @@
 {% if poll_ids %}
   <h2>My Polls</h2>
 
-    {% for id, end_date_time, event_date_time,is_active in poll_ids %}
+    {% for id,poll_text,end_date_time, event_date_time,is_active in poll_ids %}
       <div class="poll-container">
+        <p style="margin-right: 20px;">Event : {{ poll_text }}</p>
         <div class="event-details">
           <p style="margin-right: 20px;">Event Date: </p>
           <p>{{ event_date_time }}</p>

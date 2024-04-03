@@ -65,7 +65,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def my_polls(self,request):
-        poll_ids = self.queryset.filter(users=request.user).values_list('id','end_date_time','event_date_time','is_active').order_by('-start_date_time')
+        poll_ids = self.queryset.filter(users=request.user).values_list('id','poll_text','end_date_time','event_date_time','is_active').order_by('-start_date_time')
         context = CONTEXT
         context["poll_ids"] = poll_ids
         datetime_now_utc = timezone.now()
