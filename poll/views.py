@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from django.utils import timezone
 import pytz
+from datetime import datetime
 
 
 from poll.forms import PollResponseForm
@@ -29,7 +30,8 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def active_polls(self, request):
-        active_polls = Poll.objects.active_polls().order_by('-start_date_time')
+        datetime_now_utc = timezone.now()
+        active_polls = Poll.objects.active_polls().filter(start_date_time__lte=datetime_now_utc).order_by('-start_date_time')
         context = CONTEXT
         context["active_polls"] = active_polls
         return render(request, 'active_polls.html', context)
@@ -89,13 +91,13 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
             pass
         
         background_image = f"https://picsum.photos/id/{poll_id}/350/550"
-        lunch_date = poll.event_date_time.strftime("%d/%m/%Y")
+        event_date = poll.event_date_time.strftime("%d/%m/%Y")
         
         image_data = superimpose_images(
                         background_url=background_image,
                         profile_pic_url=user_image,
-                        text=lunch_date
+                        text=event_date
                     )
         response = HttpResponse(image_data, content_type='image/jpeg')
-        response['Content-Disposition'] = 'attachment; filename="superimposed_image.jpg"'
+        response['Content-Disposition'] = 'attachment; filename=f"unique_image_{event_date}.jpg"'
         return response
