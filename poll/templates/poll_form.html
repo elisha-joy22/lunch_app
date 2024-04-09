@@ -12,7 +12,14 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="submit-btn">Send</button> 
+    <div style="display: flex;">
+        <div style="flex: 50%;">
+            <button type="submit" class="submit-btn">Poll</button>
+        </div>
+        <div>
+            <a href="{{ basic_url }}polls/poll_extra_count?poll_id={{ poll.id }}" class="btn btn-secondary">Add Extra Counts</a>
+        </div>
+    <div> 
 </form>
 </div>
 {% endblock %}

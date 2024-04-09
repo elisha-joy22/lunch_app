@@ -1,6 +1,6 @@
 from typing import Any
 from django import forms
-from poll.models import Poll,ScheduledPoll
+from poll.models import Poll,ScheduledPoll,PollExtraCount
 
 class CreatePollForm(forms.ModelForm):
     start_date_time = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
@@ -32,6 +32,11 @@ class PollResponseForm(forms.ModelForm):
     class Meta:
         model = Poll
         fields = []
+
+class PollExtraCountForm(forms.ModelForm):
+    class Meta:
+        model = PollExtraCount
+        fields = ["department","count"]
 
 
 class ScheduledPollForm(forms.ModelForm):

@@ -9,8 +9,8 @@ import pytz
 from datetime import datetime
 
 
-from poll.forms import PollResponseForm
-from poll.models import Poll
+from poll.forms import PollResponseForm,PollExtraCountForm
+from poll.models import Poll,PollExtraCount
 from poll.serializers import PollSerializer
 from accounts.mixins import TokenAuthRequiredMixin
 from utils.unique_images import superimpose_images
@@ -63,7 +63,72 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
                 return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
             context["error"] = "An error occured while submitting your response!"
             return render(request,"response.html",context)
+        
+    
+    @action(detail=False, methods=['get','post'])
+    def poll_extra_count(self, request):
+        poll_id = request.query_params.get('poll_id')
+        poll = get_object_or_404(Poll,pk=poll_id)
+        poll_extra_counts = poll.poll_extra_counts.all()
+        print(poll_extra_counts)
+        print("inside_poll_extra")
+        context = CONTEXT
+        if request.method=="GET":
+            form = PollExtraCountForm()
+            context["form"] = form
+            context["poll"] = poll
+            context["poll_extra_counts"] = poll_extra_counts
+            context["user_id"] = request.user.id
+            print("user",request.user)
+            return render(request,"poll_extra_count.html",context)
+            
+        elif request.method=="POST":
+            form = PollExtraCountForm(request.POST)
+            if form.is_valid():
+                print(0)
+                poll_response = form.save(commit=False)
+                poll_response.user_id = request.user.id
+                poll_response.poll_id = poll.id
+                poll_response.save()
+            context["error"] = "An error occured while submitting your response!"
+            return render(request,"response.html",context)
+    
 
+    @action(detail=False, methods=['get','post'])
+    def edit_poll_extra_count(self, request):
+        poll_extra_count_id = request.query_params.get('id')
+        poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
+        poll_id = poll_extra_count_instance.poll_id
+        print("inside_poll_edit_extra")
+        context = CONTEXT
+        if request.method=="GET":
+            form = PollExtraCountForm(instance=poll_extra_count_instance)
+            context['form'] = form
+            context['poll'] = Poll.objects.get(id=poll_id)
+            return render(request,"edit_poll_extra_count.html",context)
+        elif request.method == "POST":
+            form = PollExtraCountForm(data=request.POST, instance=poll_extra_count_instance)
+            if form.is_valid():
+                form.save()
+                context["form"] = form
+                print("user",request.user)
+                return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_id}")
+            context["error"] = "An error occured while submitting your response!"
+            return render(request,"response.html",context)
+
+
+    '''            
+        elif request.method=="POST":
+            form = PollExtraCountForm(request.POST)
+            if form.is_valid():
+                print(0)
+                poll_response = form.save(commit=False)
+                poll_response.user_id = request.user.id
+                poll_response.poll_id = poll_id
+                poll_response.save()
+            context["error"] = "An error occured while submitting your response!"
+            return render(request,"response.html",context)
+    '''
 
     @action(detail=False, methods=['get'])
     def my_polls(self,request):

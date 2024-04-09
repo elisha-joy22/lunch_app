@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/poll_extra_count.css' %}">
+
+{% if poll %}
+  <h2>Add Extra Counts</h2>
+
+      <div class="poll-container">
+        <p style="margin-right: 20px;">Event : {{ poll.poll_text }}</p>
+        <div class="event-details">
+          <p style="margin-right: 20px;">Event Date: </p>
+          <p>{{ poll.event_date_time }}</p>
+        </div>
+      </div>
+      <div class="poll-container">
+        {% for poll_count in poll_extra_counts %}
+        <div class="poll_extra_count_container">
+          <div class="poll_extra_count_details">
+            <p>Department : {{ poll_count.department }}</p>
+            <p >Count : {{ poll_count.count }}</p>
+            <p>Polled by : {{ poll_count.user.name }}</p>
+          </div>
+          <div class="poll_extra_count_edit">
+          {%if user_id == poll_count.user.id%}
+            <a href="{{ basic_url }}polls/edit_poll_extra_count?id={{ poll_count.id }}" class="btn btn-secondary">Edit</a>
+          {%endif%}
+          </div>
+        </div>
+        <p></p>
+        {% endfor %}
+      </div>
+      <div class="poll-container">
+        <h4>Add Yours</h4>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="submit-btn">Add</button> 
+        </form>
+      </div>
+    
+{% endif %}
+
+{% endblock %}

@@ -4,12 +4,12 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
-from poll.models import Poll,ScheduledPoll
+from poll.models import Poll,ScheduledPoll,PollExtraCount
 from poll.forms import ScheduledPollForm,CreatePollForm
 #from utils.timezone_converter import convert_utc_to_kolkata_time
 
 class PollAdmin(admin.ModelAdmin):
-    list_display = ( 'event_date_time', 'poll_text', 'poll_count')
+    list_display = ( 'event_date_time', 'poll_text', 'poll_count','extra_count')
     fields = ['start_date_time','end_date_time','event_date_time', 'poll_text','is_active']
     readonly_fields = ('poll_count',)
     actions = ['generate_pdf']
@@ -19,7 +19,9 @@ class PollAdmin(admin.ModelAdmin):
     def poll_count(self,obj):
         return Poll.objects.get_poll_count(obj.id)
 
-
+    def extra_count(self,obj):
+        return Poll.objects.get_poll_extra_count(obj.id)
+    
     def generate_pdf(self, request, queryset):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="poll_users.pdf"'

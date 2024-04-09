@@ -3,7 +3,8 @@ from datetime import time
 from pytz import timezone as tz
 from django.utils import timezone
 from django_celery_beat.models import CrontabSchedule,PeriodicTask
-from django.db.models import Q
+from django.db.models import Q,Sum
+from django.utils.text import slugify
 
 from accounts.models import CustomUser
 
@@ -21,6 +22,9 @@ class PollManager(models.Manager):
 
     def get_poll_count(self,id):
         return self.get(pk=id).users.count()
+    
+    def get_poll_extra_count(self,id):
+        return self.get(pk=id).poll_extra_counts.aggregate(total_count=Sum('count'))['total_count']
     
     def get_polled_users(self,id):
         return self.get(pk=id).users.all()
@@ -47,12 +51,26 @@ class PollUser(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
 
 
+class PollExtraCount(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE,related_name='poll_extra_counts')
+    department = models.CharField(max_length=100)
+    count = models.PositiveSmallIntegerField()
+
+    def save(self,*args,**kwargs):
+        self.department = self.department.lower()
+        self.department = slugify(self.department)
+        super().save(*args,**kwargs)
+
+
+
+
 class ScheduledPoll(models.Model):
     name = models.CharField(max_length=255)
     poll_start_time = models.TimeField(default=time(hour=0, minute=0, second=0))
     poll_end_time = models.TimeField(default=time(hour=0, minute=0, second=0))
     event_time = models.TimeField(default=time(hour=0, minute=0, second=0))
-    days_until_event_after_poll = models.PositiveIntegerField()
+    days_until_event_after_poll = models.PositiveSmallIntegerField()
     poll_text = models.CharField(max_length=255)
     
     crontab = models.ForeignKey(CrontabSchedule,on_delete=models.CASCADE)
