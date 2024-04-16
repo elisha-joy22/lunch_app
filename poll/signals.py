@@ -56,6 +56,7 @@ def create_clock_schedule_on_poll_creation(sender, instance, created, **kwargs):
         instance.periodic_task_id = periodic_task.id
         instance.periodic_task.enabled = True
         instance.save()
+        print("da mone signal 1")
 
     else:
         clocked_schedule_obj = instance.clocked_schedule
@@ -66,7 +67,7 @@ def create_clock_schedule_on_poll_creation(sender, instance, created, **kwargs):
         periodic_task_obj.args = json.dumps([instance.id])
         periodic_task_obj.enabled=True
         periodic_task_obj.save()
-
+        print("da mone signal2")
 
 @receiver(post_delete, sender=Poll)
 def delete_poll(sender, instance, **kwargs):
