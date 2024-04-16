@@ -3,7 +3,6 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/poll_extra_count.css' %}">
-
 {% if poll %}
   <h2>Add Extra Counts</h2>
 
@@ -24,7 +23,12 @@
           </div>
           <div class="poll_extra_count_edit">
           {%if user_id == poll_count.user.id%}
-            <a href="{{ basic_url }}polls/edit_poll_extra_count?id={{ poll_count.id }}" class="btn btn-secondary">Edit</a>
+            <div class="edit_button">
+              <a href="{{ basic_url }}polls/edit_poll_extra_count?id={{ poll_count.id }}" class="btn btn-secondary">Edit</a>
+            </div>
+            <div>
+              <a href="{{ basic_url }}polls/delete_poll_extra_count?id={{ poll_count.id }}" class="btn btn-danger">Delete</a>
+            </div>
           {%endif%}
           </div>
         </div>

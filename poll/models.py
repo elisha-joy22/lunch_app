@@ -2,7 +2,7 @@ from django.db import models
 from datetime import time
 from pytz import timezone as tz
 from django.utils import timezone
-from django_celery_beat.models import CrontabSchedule,PeriodicTask
+from django_celery_beat.models import CrontabSchedule,PeriodicTask,ClockedSchedule
 from django.db.models import Q,Sum
 from django.utils.text import slugify
 
@@ -38,6 +38,9 @@ class Poll(models.Model):
     poll_text = models.CharField(max_length=255)
     users = models.ManyToManyField(CustomUser, through='PollUser', related_name='polls')
     is_active = models.BooleanField(default=True)
+
+    clocked_schedule = models.OneToOneField(ClockedSchedule,on_delete=models.CASCADE,null=True)
+    periodic_task = models.OneToOneField(PeriodicTask,on_delete=models.CASCADE,null=True)
 
     objects = PollManager()
 

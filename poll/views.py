@@ -1,4 +1,5 @@
 from django.shortcuts import render,get_object_or_404
+from django.contrib import messages
 from django.conf import settings
 from django.http.response import HttpResponse,HttpResponseRedirect
 from rest_framework.viewsets import ModelViewSet 
@@ -55,17 +56,29 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         elif request.method=="POST":
             form = PollResponseForm(request.POST)
             if form.is_valid():
+                user_polled_status = poll.users.filter(id=request.user.id).exists()
                 poll_response = form.cleaned_data['response']
-                if poll_response=="True":
+                if user_polled_status==True and poll_response=="True":
+                    messages.info(request,'You have already polled YES')
+                    print("1")
+                if user_polled_status==False and poll_response=="True":
                     poll.users.add(request.user)
-                elif poll_response=="False":
-                    poll.users.remove(request.user)
+                    messages.success(request,'You successfully polled YES')
+                    print("2")
+                elif user_polled_status==True and poll_response=="False":
+                    messages.success(request,'Your poll was removed successfully')
+                    a = poll.users.remove(request.user)
+                    print("response",a)
+                    print("3")
+                elif user_polled_status==False and poll_response=="False":
+                    messages.warning(request,"You haven't polled for the event event yet!")
+                    print("4")
                 return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
             context["error"] = "An error occured while submitting your response!"
             return render(request,"response.html",context)
         
     
-    @action(detail=False, methods=['get','post'])
+    @action(detail=False, methods=['get','post','delete'])
     def poll_extra_count(self, request):
         poll_id = request.query_params.get('poll_id')
         poll = get_object_or_404(Poll,pk=poll_id)
@@ -90,8 +103,11 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
                 poll_response.user_id = request.user.id
                 poll_response.poll_id = poll.id
                 poll_response.save()
+                return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_id}")
+ 
             context["error"] = "An error occured while submitting your response!"
             return render(request,"response.html",context)
+                    
     
 
     @action(detail=False, methods=['get','post'])
@@ -116,19 +132,38 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
             context["error"] = "An error occured while submitting your response!"
             return render(request,"response.html",context)
 
+    
+    @action(detail=False, methods=['get','post'])
+    def delete_poll_extra_count(self, request):
+        poll_extra_count_id = request.query_params.get('id')
+        poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
+        print(poll_extra_count_instance.poll.id)
 
-    '''            
-        elif request.method=="POST":
-            form = PollExtraCountForm(request.POST)
-            if form.is_valid():
-                print(0)
-                poll_response = form.save(commit=False)
-                poll_response.user_id = request.user.id
-                poll_response.poll_id = poll_id
-                poll_response.save()
-            context["error"] = "An error occured while submitting your response!"
-            return render(request,"response.html",context)
-    '''
+        if poll_extra_count_instance.user.id == request.user.id:
+            context = CONTEXT
+            if request.method=="GET":
+                print(request.query_params)
+                print(request.query_params.get('delete'))
+                if request.query_params.get('delete')=='True':
+                    print("hi")
+                    deleted_count, _ = PollExtraCount.objects.filter(pk=poll_extra_count_id).delete()    
+                    if deleted_count == 1:
+                        print("deleted")
+                        messages.success(request,'Extra count was Successfully deleted.')
+                        return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_extra_count_instance.poll.id}")
+                    else:
+                        messages.error(request, 'Deleting extra count failed!')
+                        return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_extra_count_instance.poll.id}")
+                context['extra_count'] = poll_extra_count_instance
+                context['poll_id'] = poll_extra_count_instance.poll.id
+                return render(request,"delete_extra_count.html",context)
+        messages.error(request,'Unauthorised Request!')
+        return HttpResponse("Unauthorised!!")
+            
+
+
+
+
 
     @action(detail=False, methods=['get'])
     def my_polls(self,request):

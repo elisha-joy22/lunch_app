@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from datetime import timedelta
 from celery.schedules import crontab
 
+from django.contrib.messages import constants as messages
+
 import os
 
 load_dotenv()
@@ -115,3 +117,12 @@ CONTEXT = {
 CELERY_TIMEZONE = 'Asia/Kolkata'
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-secondary',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+ }

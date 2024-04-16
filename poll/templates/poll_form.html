@@ -12,6 +12,9 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    {% if user_polled_status%}
+        <p class="already-polled-msg">You have already polled YES for the event.</p>
+    {% endif %}
     <div style="display: flex;">
         <div style="flex: 50%;">
             <button type="submit" class="submit-btn">Poll</button>

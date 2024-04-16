@@ -4,6 +4,7 @@
 
 <link rel="stylesheet" href="{% static 'css/poll_extra_count.css' %}">
 
+
 <h2>Edit Extra Counts</h2>
 <div class="poll-container">
     <p style="margin-right: 20px;">Event : {{ poll.poll_text }}</p>
@@ -16,7 +17,7 @@
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit" class="submit-btn">Add</button> 
+      <button type="submit" class="submit-btn">Update</button> 
     </form>
   </div>
 

@@ -1,14 +1,14 @@
 .poll-container {
-    border: 2px #007bff; 
+    border: 2px solid #007bff; 
     padding: 10px; 
     margin-bottom: 20px; 
-    max-width: 50%; 
+    max-width: 100%; 
     margin-left: 0%; 
     margin-right: auto;
-    background-color:#96E9C6
+    background-color: #96E9C6;
 }
 
-.poll_extra_count_container{
+.poll_extra_count_container {
     display: flex;
     align-items: center;
 }
@@ -21,14 +21,22 @@
     flex: 60%;  
 }
 
-.poll_extra_count_details p{
+.poll_extra_count_details p {
     margin-right: 20%;
     margin-bottom: 0%;
 }
 
-.poll_extra_count_edit{
+.poll_extra_count_edit {
     padding-left: 2%;
     padding-right: 3%;
+    display: flex;
+    align-items:center;
+    flex-direction: column;
+}
+
+.edit_button {
+    padding-bottom: 10%;
+    padding-left: 11%;
 }
 
 .details {
@@ -40,4 +48,11 @@
 .event-details {
     display: flex;
     align-items: center;
+}
+
+/* Media query for screens below 520px */
+@media screen and (max-width: 520px) {
+    .poll-container {
+        max-width: 100%;
+    }
 }
