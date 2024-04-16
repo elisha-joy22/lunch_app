@@ -10,18 +10,28 @@ from poll.models import Poll,ScheduledPoll
 #from utils.timezone_converter import convert_utc_to_kolkata_time
 
 class PollAdmin(admin.ModelAdmin):
-    list_display = ( 'event_date_time', 'poll_text', 'poll_count','extra_count')
+    list_display = ( 'id','event_date_time', 'poll_text', 'poll_count','extra_count','total_count')
     fields = ['start_date_time','end_date_time','event_date_time', 'poll_text','is_active']
     readonly_fields = ('poll_count',)
     actions = ['generate_pdf']
 
     form = CreatePollForm
-
+    
+    poll_count_var = None
+    extra_count_var = None
+    
     def poll_count(self,obj):
-        return Poll.objects.get_poll_count(obj.id)
+        count = Poll.objects.get_poll_count(obj.id) or 0
+        self.p_count = count 
+        return self.p_count
 
     def extra_count(self,obj):
-        return Poll.objects.get_poll_extra_count(obj.id)
+        count = Poll.objects.get_poll_extra_count(obj.id) or 0
+        self.ex_count = count
+        return self.ex_count
+    
+    def total_count(self,obj):
+        return self.p_count + self.ex_count
     
     def generate_pdf(self,request,queryset):
         poll_data = []
