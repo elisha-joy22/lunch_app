@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.http import HttpResponse
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.platypus import Table, TableStyle
-from poll.models import Poll,ScheduledPoll,PollExtraCount
 from poll.forms import ScheduledPollForm,CreatePollForm
+from django.template.loader import render_to_string
+from django.db.models import Sum
+from weasyprint import HTML
+
+from poll.models import Poll,ScheduledPoll
+
 #from utils.timezone_converter import convert_utc_to_kolkata_time
 
 class PollAdmin(admin.ModelAdmin):
@@ -22,43 +23,47 @@ class PollAdmin(admin.ModelAdmin):
     def extra_count(self,obj):
         return Poll.objects.get_poll_extra_count(obj.id)
     
-    def generate_pdf(self, request, queryset):
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="poll_users.pdf"'
-
-        # Create canvas
-        c = canvas.Canvas(response, pagesize=letter)
-        y = 750
-        
+    def generate_pdf(self,request,queryset):
+        poll_data = []
         for poll in queryset:
-            c.drawString(100, y, f'Poll ID: {poll.id}')
-            c.drawString(100, y-20, f'Event Date: {poll.event_date_time}')
-            c.drawString(100, y-40, f"Polled User count:{Poll.objects.get_poll_count(poll.id)}")
-            y -= 60
-        
-        # Create table
-        data = [['No.', 'Name', 'Email']]
-        for poll in queryset:
-            polled_users = Poll.objects.get_polled_users(poll.id)
-            for index, user in enumerate(polled_users, start=1):
-                data.append([index, user.name, user.email])
+            polled_users = poll.users.all()
+            extra_counts = poll.poll_extra_counts.all()
+            
+            polled_user_data = [(
+                index,
+                user.name,
+                user.email
+            ) for index, user in enumerate(polled_users, start=1)]
+            
+            extra_count_data = [(
+                index,
+                extra_count.department,
+                extra_count.count,
+                extra_count.user.name,
+                extra_count.user.email
+            ) for index,extra_count in enumerate(extra_counts, start=1)]
+            
+            polled_user_count = len(polled_users)
+            extra_count_sum = extra_counts.aggregate(extra_count_sum=Sum('count'))['extra_count_sum'] or 0
+            total_count = polled_user_count + extra_count_sum
+            poll_data.append({
+                'id': poll.id,
+                'poll_text': poll.poll_text,
+                'event_date_time': poll.event_date_time,
+                'polled_user_count': len(polled_users),
+                'polled_user_data': polled_user_data,
+                'extra_count_data': extra_count_data,
+                'extra_count_sum':extra_count_sum,
+                'total_count': total_count
+            })
+        context = {'poll_data': poll_data}
+        html_content = render_to_string('poll_result.html', context)
 
-        table = Table(data)
-        table.setStyle(TableStyle([('BACKGROUND', (0,0), (-1,0), colors.gray),
-                                   ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
-                                   ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-                                   ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-                                   ('BOTTOMPADDING', (0,0), (-1,0), 12),
-                                   ('BACKGROUND', (0,1), (-1,-1), colors.beige),
-                                   ('GRID', (0,0), (-1,-1), 1, colors.black)]))
+        pdf_file = HTML(string=html_content).write_pdf()
 
-        # Draw table on canvas
-        table.wrapOn(c, 400, 200)
-        table.drawOn(c, 100, y-80)
-
-        # Close the canvas
-        c.showPage()
-        c.save()
+    # Create HTTP response with PDF content
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="poll_data.pdf"'
         return response
 
 

@@ -1,0 +1,88 @@
+<!-- poll_users_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Users</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #808080;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Poll Data </h2>
+    {% for poll in poll_data %}
+        <div>
+            <h4>Poll text: {{ poll.poll_text }}</h4>
+            <p>Poll ID: {{ poll.id }}</p>
+            <p>Event Date: {{ poll.event_date_time }}</p>
+            <p>Polled User count: {{ poll.polled_user_count }}</p>
+            <p>Total Extra count: {{ poll.extra_count_sum }}</p>
+            <p>Total Extra count: {{ poll.total_count }}</p>
+        </div>
+
+
+    <table>
+        <caption><h3>Extra Counts</h3></caption>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Department</th>
+                <th>Count</th>
+                <th>Polled User Name</th>
+                <th>Polled User Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, department, count, name, email in poll.extra_count_data %}
+                <tr>
+                    <td>{{ index }}</td>
+                    <td>{{ department }}</td>
+                    <td>{{ count }}</td>
+                    <td>{{ name }}</td>
+                    <td>{{ email }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table>
+        <caption><h3>Polled Users</h3></caption>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, name, email in poll.polled_user_data %}
+                <tr>
+                    <td>{{ index }}</td>
+                    <td>{{ name }}</td>
+                    <td>{{ email }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endfor %}
+<br/>
+<br/>
+</body>
+</html>
