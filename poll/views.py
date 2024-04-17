@@ -86,6 +86,12 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         print(poll_extra_counts)
         print("inside_poll_extra")
         context = CONTEXT
+
+        if Poll.objects.is_poll_expired(poll.id):
+            messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
+            return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
+
+
         if request.method=="GET":
             form = PollExtraCountForm()
             context["form"] = form
@@ -116,12 +122,18 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
         poll_id = poll_extra_count_instance.poll_id
         print("inside_poll_edit_extra")
-        context = CONTEXT
+        context = CONTEXT 
+
+        if Poll.objects.is_poll_expired(poll_id):
+            messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
+            return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
+
         if request.method=="GET":
             form = PollExtraCountForm(instance=poll_extra_count_instance)
             context['form'] = form
             context['poll'] = Poll.objects.get(id=poll_id)
             return render(request,"edit_poll_extra_count.html",context)
+
         elif request.method == "POST":
             form = PollExtraCountForm(data=request.POST, instance=poll_extra_count_instance)
             if form.is_valid():
@@ -131,13 +143,17 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
                 return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_id}")
             context["error"] = "An error occured while submitting your response!"
             return render(request,"response.html",context)
-
     
     @action(detail=False, methods=['get','post'])
     def delete_poll_extra_count(self, request):
         poll_extra_count_id = request.query_params.get('id')
         poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
         print(poll_extra_count_instance.poll.id)
+
+        if Poll.objects.is_poll_expired(poll_extra_count_instance.poll.id):
+            messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
+            return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
+
 
         if poll_extra_count_instance.user.id == request.user.id:
             context = CONTEXT

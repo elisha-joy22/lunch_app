@@ -39,6 +39,8 @@ def create_scheduled_poll(end_time, event_time, poll_text, days_until_event_afte
 def send_poll_details_via_slack(poll_id):
     print("poll_id",poll_id)
     poll_instance = Poll.objects.get(id=poll_id)
+    poll_instance.is_active = False
+    poll_instance.save()
 
     end_date_time = poll_instance.end_date_time
     event_date_time_str = str(poll_instance.event_date_time)
