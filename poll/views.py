@@ -1,14 +1,13 @@
 from django.shortcuts import render,get_object_or_404
 from django.contrib import messages
 from django.conf import settings
+from django.utils import timezone
 from django.http.response import HttpResponse,HttpResponseRedirect
 from rest_framework.viewsets import ModelViewSet 
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
-from django.utils import timezone
-import pytz
-from datetime import datetime
 
+import pytz
 
 from poll.forms import PollResponseForm,PollExtraCountForm
 from poll.models import Poll,PollExtraCount
@@ -36,6 +35,21 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         context = CONTEXT
         context["active_polls"] = active_polls
         return render(request, 'active_polls.html', context)
+    
+
+    @action(detail=False, methods=['get'])
+    def my_polls(self,request):
+        poll_ids = self.queryset.filter(users=request.user).values_list('id','poll_text','end_date_time','event_date_time','is_active').order_by('-start_date_time')
+        context = CONTEXT
+        context["poll_ids"] = poll_ids
+        datetime_now_utc = timezone.now()
+        timezone_kolkata = pytz.timezone('Asia/Kolkata')
+        datetime_now_kolkata = datetime_now_utc.astimezone(timezone_kolkata)
+
+        context["datetime_now"] = datetime_now_kolkata
+        print("now", context["datetime_now"])
+        
+        return render(request, "my_polls.html", context)
 
 
     @action(detail=False, methods=['get','post'])
@@ -83,8 +97,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_id = request.query_params.get('poll_id')
         poll = get_object_or_404(Poll,pk=poll_id)
         poll_extra_counts = poll.poll_extra_counts.all()
-        print(poll_extra_counts)
-        print("inside_poll_extra")
+
         context = CONTEXT
         if request.method=="GET":
             form = PollExtraCountForm()
@@ -115,69 +128,50 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_extra_count_id = request.query_params.get('id')
         poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
         poll_id = poll_extra_count_instance.poll_id
-        print("inside_poll_edit_extra")
+
         context = CONTEXT
+
         if request.method=="GET":
             form = PollExtraCountForm(instance=poll_extra_count_instance)
             context['form'] = form
-            context['poll'] = Poll.objects.get(id=poll_id)
+            context['poll'] = poll_extra_count_instance.poll
             return render(request,"edit_poll_extra_count.html",context)
+
         elif request.method == "POST":
             form = PollExtraCountForm(data=request.POST, instance=poll_extra_count_instance)
             if form.is_valid():
                 form.save()
                 context["form"] = form
-                print("user",request.user)
                 return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_id}")
             context["error"] = "An error occured while submitting your response!"
             return render(request,"response.html",context)
 
     
-    @action(detail=False, methods=['get','post'])
+    @action(detail=False, methods=['get'])
     def delete_poll_extra_count(self, request):
         poll_extra_count_id = request.query_params.get('id')
         poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
-        print(poll_extra_count_instance.poll.id)
 
         if poll_extra_count_instance.user.id == request.user.id:
             context = CONTEXT
-            if request.method=="GET":
-                print(request.query_params)
-                print(request.query_params.get('delete'))
-                if request.query_params.get('delete')=='True':
-                    print("hi")
-                    deleted_count, _ = PollExtraCount.objects.filter(pk=poll_extra_count_id).delete()    
-                    if deleted_count == 1:
-                        print("deleted")
-                        messages.success(request,'Extra count was Successfully deleted.')
-                        return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_extra_count_instance.poll.id}")
-                    else:
-                        messages.error(request, 'Deleting extra count failed!')
-                        return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_extra_count_instance.poll.id}")
-                context['extra_count'] = poll_extra_count_instance
-                context['poll_id'] = poll_extra_count_instance.poll.id
-                return render(request,"delete_extra_count.html",context)
+            
+            if request.query_params.get('delete')=='True':
+                deleted_count, _ = poll_extra_count_instance.delete()    
+                
+                if deleted_count == 1:
+                    messages.success(request,'Extra count was Successfully deleted.')
+                else:
+                    messages.error(request, 'Deleting extra count failed!')
+                return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_extra_count_instance.poll.id}")
+            
+            context['extra_count'] = poll_extra_count_instance
+            context['poll_id'] = poll_extra_count_instance.poll.id
+            return render(request,"delete_extra_count.html",context)
+        
         messages.error(request,'Unauthorised Request!')
         return HttpResponse("Unauthorised!!")
             
 
-
-
-
-
-    @action(detail=False, methods=['get'])
-    def my_polls(self,request):
-        poll_ids = self.queryset.filter(users=request.user).values_list('id','poll_text','end_date_time','event_date_time','is_active').order_by('-start_date_time')
-        context = CONTEXT
-        context["poll_ids"] = poll_ids
-        datetime_now_utc = timezone.now()
-        timezone_kolkata = pytz.timezone('Asia/Kolkata')
-        datetime_now_kolkata = datetime_now_utc.astimezone(timezone_kolkata)
-
-        context["datetime_now"] = datetime_now_kolkata
-        print("now", context["datetime_now"])
-        
-        return render(request, "my_polls.html", context)
 
 
     @action(detail=False, methods=['get'])

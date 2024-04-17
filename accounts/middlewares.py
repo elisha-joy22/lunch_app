@@ -11,11 +11,8 @@ load_dotenv()
 
 class JWTAuthenticationMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        print("Inside jwt middleware")
         token = request.COOKIES.get("auth_token")
         user = TokenBackend().authenticate(request,token=token)
-        print("user exists?",user)
-        print(request.user)
         request.user = SimpleLazyObject(
                             lambda: user if user else get_user(request)
         )   

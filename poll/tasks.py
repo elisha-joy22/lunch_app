@@ -42,6 +42,7 @@ def send_poll_details_via_slack(poll_id):
 
     end_date_time = poll_instance.end_date_time
     event_date_time_str = str(poll_instance.event_date_time)
+    
     event_date_time = datetime.fromisoformat(event_date_time_str)
 
     # Add 5 hours and 30 minutes
@@ -50,8 +51,6 @@ def send_poll_details_via_slack(poll_id):
     # Format the new datetime as a string
     formatted_new_event_date_time = new_event_date_time.strftime('%Y-%m-%d %H:%M:%S')
 
-
-    print("event_date_time",event_date_time)
     poll_text = poll_instance.poll_text
 
     count = Poll.objects.get_poll_count(id=poll_instance.id) or 0
@@ -59,7 +58,6 @@ def send_poll_details_via_slack(poll_id):
     slack_message_text1 = f"The poll has ended just now!\n {poll_text}\n Event Date:{formatted_new_event_date_time}\n"
     slack_message_text2 = f"Count:{count}\n Extra_counts:{extra_counts}\n Total Count:{count + extra_counts}"
     slack_message = slack_message_text1 + slack_message_text2
-    print("clocked")    
 
     try:
         response = slack_app.client.chat_postMessage(
