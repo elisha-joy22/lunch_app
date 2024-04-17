@@ -44,6 +44,11 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll = get_object_or_404(Poll,pk=poll_id)
         
         context = CONTEXT
+        
+        if Poll.objects.is_poll_expired(poll_id):
+            messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
+            return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
+
         if request.method=="GET":
             form = PollResponseForm()
             user_polled_status = poll.users.filter(id=request.user.id).exists()
