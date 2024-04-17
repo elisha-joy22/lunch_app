@@ -52,6 +52,7 @@ class Poll(models.Model):
 class PollUser(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    polled_date_time = models.DateTimeField(default=timezone.now)
 
 
 class PollExtraCount(models.Model):
@@ -59,6 +60,7 @@ class PollExtraCount(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE,related_name='poll_extra_counts')
     department = models.CharField(max_length=100)
     count = models.PositiveSmallIntegerField()
+    polled_date_time = models.DateTimeField(default=timezone.now)
 
     def save(self,*args,**kwargs):
         self.department = self.department.lower()

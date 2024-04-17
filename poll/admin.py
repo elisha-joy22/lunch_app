@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.db.models import Sum
 from weasyprint import HTML
 
-from poll.models import Poll,ScheduledPoll
+from poll.models import Poll,ScheduledPoll,PollUser,PollExtraCount
 
 #from utils.timezone_converter import convert_utc_to_kolkata_time
 
@@ -36,21 +36,23 @@ class PollAdmin(admin.ModelAdmin):
     def generate_pdf(self,request,queryset):
         poll_data = []
         for poll in queryset:
-            polled_users = poll.users.all()
-            extra_counts = poll.poll_extra_counts.all()
+            polled_users = PollUser.objects.filter(poll=poll)
+            extra_counts = PollExtraCount.objects.filter(poll=poll)
             
             polled_user_data = [(
                 index,
-                user.name,
-                user.email
-            ) for index, user in enumerate(polled_users, start=1)]
+                polled_user.user.name,
+                polled_user.user.email,
+                polled_user.polled_date_time,
+            ) for index,polled_user in enumerate(polled_users, start=1)]
             
             extra_count_data = [(
                 index,
                 extra_count.department,
                 extra_count.count,
                 extra_count.user.name,
-                extra_count.user.email
+                extra_count.user.email,
+                extra_count.polled_date_time,
             ) for index,extra_count in enumerate(extra_counts, start=1)]
             
             polled_user_count = len(polled_users)

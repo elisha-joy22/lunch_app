@@ -44,18 +44,20 @@
                 <th>No.</th>
                 <th>Department</th>
                 <th>Count</th>
-                <th>Polled User Name</th>
+                <th>Polled User</th>
                 <th>Polled User Email</th>
+                <th>Polled Date Time</th>
             </tr>
         </thead>
         <tbody>
-            {% for index, department, count, name, email in poll.extra_count_data %}
+            {% for index, department, count, name, email, polled_date_time in poll.extra_count_data %}
                 <tr>
                     <td>{{ index }}</td>
                     <td>{{ department }}</td>
                     <td>{{ count }}</td>
                     <td>{{ name }}</td>
                     <td>{{ email }}</td>
+                    <td>{{ polled_date_time }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -68,14 +70,16 @@
                 <th>No.</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Polled DateTime</th>
             </tr>
         </thead>
         <tbody>
-            {% for index, name, email in poll.polled_user_data %}
+            {% for index, name, email, polled_date_time in poll.polled_user_data %}
                 <tr>
                     <td>{{ index }}</td>
                     <td>{{ name }}</td>
                     <td>{{ email }}</td>
+                    <td>{{ polled_date_time }}</td>
                 </tr>
             {% endfor %}
         </tbody>

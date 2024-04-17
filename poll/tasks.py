@@ -54,8 +54,8 @@ def send_poll_details_via_slack(poll_id):
     print("event_date_time",event_date_time)
     poll_text = poll_instance.poll_text
 
-    count = Poll.objects.get_poll_count(id=poll_instance.id)
-    extra_counts = Poll.objects.get_poll_extra_count(id=poll_instance.id)
+    count = Poll.objects.get_poll_count(id=poll_instance.id) or 0
+    extra_counts = Poll.objects.get_poll_extra_count(id=poll_instance.id) or 0
     slack_message_text1 = f"The poll has ended just now!\n {poll_text}\n Event Date:{formatted_new_event_date_time}\n"
     slack_message_text2 = f"Count:{count}\n Extra_counts:{extra_counts}\n Total Count:{count + extra_counts}"
     slack_message = slack_message_text1 + slack_message_text2
