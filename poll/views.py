@@ -164,15 +164,14 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
     def delete_poll_extra_count(self, request):
         poll_extra_count_id = request.query_params.get('id')
         poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
-
+        context = CONTEXT
+        
         if Poll.objects.is_poll_expired(poll_extra_count_instance.poll.id):
             messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
             return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
 
 
         if poll_extra_count_instance.user.id == request.user.id:
-            context = CONTEXT
-            
             if request.query_params.get('delete')=='True':
                 deleted_count, _ = poll_extra_count_instance.delete()    
                 
