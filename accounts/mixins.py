@@ -4,7 +4,6 @@ from django.urls import reverse
 
 class TokenAuthRequiredMixin:
     def dispatch(self,request,*args,**kwargs):
-        print("TokenAuthRequiredMixin")
         if not request.user.is_authenticated:
             sign_url = reverse('user-sign-in')
             return redirect(sign_url)
