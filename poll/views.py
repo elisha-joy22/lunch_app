@@ -47,7 +47,6 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         datetime_now_kolkata = datetime_now_utc.astimezone(timezone_kolkata)
 
         context["datetime_now"] = datetime_now_kolkata
-        print("now", context["datetime_now"])
         
         return render(request, "my_polls.html", context)
 
@@ -74,19 +73,19 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
                 poll_response = form.cleaned_data['response']
                 if user_polled_status==True and poll_response=="True":
                     messages.info(request,'You have already polled YES')
-                    print("1")
+                
                 if user_polled_status==False and poll_response=="True":
                     poll.users.add(request.user)
                     messages.success(request,'You successfully polled YES')
-                    print("2")
+                    
                 elif user_polled_status==True and poll_response=="False":
                     messages.success(request,'Your poll was removed successfully')
                     a = poll.users.remove(request.user)
                     print("response",a)
-                    print("3")
+                    
                 elif user_polled_status==False and poll_response=="False":
                     messages.warning(request,"You haven't polled for the event event yet!")
-                    print("4")
+                    
                 return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/my_polls")
             context["error"] = "An error occured while submitting your response!"
             return render(request,"response.html",context)
@@ -111,7 +110,6 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         elif request.method=="POST":
             form = PollExtraCountForm(request.POST)
             if form.is_valid():
-                print(0)
                 poll_response = form.save(commit=False)
                 poll_response.user_id = request.user.id
                 poll_response.poll_id = poll.id
