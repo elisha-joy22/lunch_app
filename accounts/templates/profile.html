@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<div class="profile-info">
+    <h2>My Profile</h2>
+    <div class="poll-container">
+        <img src="{{ user.picture_url }}" alt="User Image">
+        <p>Name: {{ user.name }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Slack_Id: {{ user.slack_id }}</p>
+    </div>    
+</div>
+{% endblock %}

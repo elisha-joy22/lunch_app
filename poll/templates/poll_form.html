@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/poll_form.css' %}">
+
+<h3>{{ poll.poll_text }}</h3>
+<div class="poll-container">
+<p>Event Date: <span class="poll-value">{{ poll.event_date_time }}</span></p>
+<p>Poll End Date: <span class="poll-value">{{ poll.end_date_time }}</span></p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if user_polled_status%}
+        <p class="already-polled-msg">You have already polled YES for the event.</p>
+    {% endif %}
+    <div style="display: flex;">
+        <div style="flex: 50%;">
+            <button type="submit" class="submit-btn">Poll</button>
+        </div>
+        <div>
+            <a href="{{ basic_url }}polls/poll_extra_count?poll_id={{ poll.id }}" class="btn btn-secondary">Add Extra Counts</a>
+        </div>
+    <div> 
+</form>
+</div>
+{% endblock %}
+

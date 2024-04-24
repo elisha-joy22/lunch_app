@@ -1,0 +1,22 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #edfcf2
+}
+
+.navbar {
+    margin-bottom: 20px;
+    background-color: #211C6A;
+}
+
+.profile-image {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+@media (max-width: 992px) {
+    .profile-image {
+        margin-left: 10px;
+    }
+}
