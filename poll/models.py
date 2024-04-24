@@ -17,6 +17,13 @@ class PollManager(models.Manager):
         print(current_time)
         return self.filter(Q(is_active=True) & Q(end_date_time__gte=current_time))
     
+    def is_poll_expired(self,id):
+        poll = self.get(pk=id)
+        ist = tz('Asia/Kolkata') 
+        current_time = timezone.now().astimezone(ist)
+        print(current_time)
+        return poll.end_date_time <= current_time 
+
     def expired_polls(self,id):
         return self.filter(end_date_time__lte=timezone.now())
 

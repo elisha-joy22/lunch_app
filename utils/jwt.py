@@ -13,7 +13,7 @@ def generate_jwt(user):
 
     payload = {
         'user' : user['email'],
-        'exp' : datetime.utcnow() + timedelta(days=1)
+        'exp' : datetime.now() + timedelta(days=1)
     }
     print("generating jwt...")
     jwt_token = jwt.encode(payload,jwt_secret,algorithm=jwt_algorithm)
@@ -22,7 +22,8 @@ def generate_jwt(user):
 
 def set_jwt_cookie(response, jwt_token):
     print('setting jwt cookie ...')
-    response.set_cookie('auth_token', jwt_token, max_age=36000, httponly=True)
+    max_age_seconds = 7*24*60*60
+    response.set_cookie('auth_token', jwt_token, max_age=max_age_seconds, httponly=True)
     return response
 
 
