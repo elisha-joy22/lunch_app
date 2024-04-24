@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/active_polls.css' %}">
+
+<h2>Active Polls</h2>
+{% if active_polls %}
+  {% for active_poll in active_polls %}
+    <div class="poll-container">
+        <p>{{ active_poll.poll_text }}</p>  
+        <p>Event Date:-{{ active_poll.event_date_time }}</p>
+        <p>Poll End Date: {{ active_poll.end_date_time }}</p>
+      <a href="{{basic_url}}polls/poll?poll_id={{active_poll.id}}">Details</a>
+    </div>
+  {% endfor %}
+
+{% else %}
+  <p>There are no active polls at the moment.</p>
+{% endif %}
+
+{% endblock %}
+

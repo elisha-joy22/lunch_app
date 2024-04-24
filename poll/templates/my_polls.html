@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/my_polls.css' %}">
+
+<h2>My Polls</h2>
+{% if poll_ids %}
+  
+
+    {% for id,poll_text,end_date_time, event_date_time,is_active in poll_ids %}
+      <div class="poll-container">
+        <p style="margin-right: 20px;">Event : {{ poll_text }}</p>
+        <div class="event-details">
+          <p style="margin-right: 20px;">Event Date: </p>
+          <p>{{ event_date_time }}</p>
+
+        {% if end_date_time > datetime_now and is_active %}
+          <a href="{{ basic_url }}polls/poll?poll_id={{ id }}" class="details">Edit</a>
+        </div>
+        <p>When the poll ends, you'll get the unique image here.</p>
+        {% else %}
+        </div>
+          <a href="{{ basic_url }}polls/download_unique_image?poll_id={{ id }}" class="btn btn-primary">Download unique image</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+{% else %}
+  <p>Sorry! You have no polls at the moment.</p>
+{% endif %}
+
+{% endblock %}
