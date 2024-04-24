@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - type: volume
+        source: lunch_app_volume
+        target: /app/static/
+
+    ports:
+      - "8000:8000"
+
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    command: bash -c "python manage.py migrate & celery -A lunch_app worker --loglevel=info & celery -A lunch_app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+
+volumes:
+  lunch_app_volume:
+    driver: local

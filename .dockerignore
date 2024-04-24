@@ -1,0 +1,9 @@
+*.pyc
+.git
+.gitignore
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir
+Dockerfile
+Dockerfile.celery
+docker-compose.yml
