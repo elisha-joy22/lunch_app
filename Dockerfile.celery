@@ -23,4 +23,6 @@ RUN pip install -r requirements.txt
 # Copy the application code
 COPY . .
 
+CMD bash -c "python manage.py migrate && celery -A lunch_app worker --loglevel=info & celery -A lunch_app beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+
 
