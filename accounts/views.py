@@ -86,7 +86,7 @@ class SlackOuthRedirectView(APIView):
         except Exception as e:
             print("Error",e)
             return Response({"message":"success","data":"User creation failed!!"})
-        response = redirect('user-profile')
+        response = redirect('active-polls')
         return set_jwt_cookie(response,jwt)
     
 

@@ -10,4 +10,5 @@ router.register(r'',PollModelViewSet,basename='poll')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('active_polls/', PollModelViewSet.as_view({'get':'active_polls'}),name='active-polls')
 ]
