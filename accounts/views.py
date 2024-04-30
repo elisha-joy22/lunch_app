@@ -1,8 +1,8 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.conf import settings
 from slack_sdk.oauth import AuthorizeUrlGenerator
 from slack_sdk.oauth.state_store import FileOAuthStateStore
 from slack_sdk.web import WebClient
@@ -41,7 +41,6 @@ authorize_url_generator = AuthorizeUrlGenerator(
 # Create your views here.
 class SlackOuthStartView(APIView):
     def get(self,request):
-        print("StartView User",request.user)
         state = state_store.issue()
         url = authorize_url_generator.generate(state=state)
         return HttpResponseRedirect(redirect_to=url)
@@ -49,7 +48,6 @@ class SlackOuthStartView(APIView):
 
 class SlackOuthRedirectView(APIView):
     def get(self,request):
-        print("RedirectView User",request.user)
         code = request.GET.get('code')
         state = request.GET.get('state')
         error = request.GET.get('error')
@@ -84,33 +82,25 @@ class SlackOuthRedirectView(APIView):
         try:     
             user_data = update_or_create_user(user=user_info)
             serialized_user_data = UserSerializer(user_data).data
-            print(serialized_user_data)
             jwt = generate_jwt(serialized_user_data)
-            print(jwt)
         except Exception as e:
             print("Error",e)
             return Response({"message":"success","data":"User creation failed!!"})
-        response = redirect('user-profile')
+        response = redirect('active-polls')
         return set_jwt_cookie(response,jwt)
     
 
 
 class UserProfileView(TokenAuthRequiredMixin,APIView):
     def get(self,request):
-        user = request.user
-        serialised_user = UserSerializer(user)
+        serialised_user = UserSerializer(request.user)
         context = CONTEXT
-        context["user"] = serialised_user.data
+        context["user"] = request.user
         return render(request, "profile.html", context)
     
 
 class LogoutView(TokenAuthRequiredMixin,APIView):
     def get(self,request):
-        user = request.user
-        auth_token = request.COOKIES.get('auth_token')
-        serialised_user = UserSerializer(user)
-        
-        # delete the auth token cookie
         response = redirect("user-sign-in")
         response.delete_cookie('auth_token')
         return response

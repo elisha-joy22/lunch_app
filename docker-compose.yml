@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - type: volume
+        source: lunch_app_volume
+        target: /app/static/
+
+    ports:
+      - "8100:8000"
+
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+ 
+volumes:
+  lunch_app_volume:
+    driver: local
