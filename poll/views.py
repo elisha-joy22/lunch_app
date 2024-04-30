@@ -33,6 +33,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         datetime_now_utc = timezone.now()
         active_polls = Poll.objects.active_polls().filter(start_date_time__lte=datetime_now_utc).order_by('-start_date_time')
         context = CONTEXT
+        context["user"] = request.user
         context["active_polls"] = active_polls
         return render(request, 'active_polls.html', context)
     
@@ -41,6 +42,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
     def my_polls(self,request):
         poll_ids = self.queryset.filter(users=request.user).values_list('id','poll_text','end_date_time','event_date_time','is_active').order_by('-start_date_time')
         context = CONTEXT
+        context["user"] = request.user
         context["poll_ids"] = poll_ids
         datetime_now_utc = timezone.now()
         timezone_kolkata = pytz.timezone('Asia/Kolkata')
@@ -57,6 +59,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll = get_object_or_404(Poll,pk=poll_id)
         
         context = CONTEXT
+        context["user"] = request.user
         
         if Poll.objects.is_poll_expired(poll_id):
             messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
@@ -103,6 +106,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_extra_counts = poll.poll_extra_counts.all()
 
         context = CONTEXT
+        context["user"] = request.user
 
         if Poll.objects.is_poll_expired(poll.id):
             messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
@@ -139,6 +143,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_id = poll_extra_count_instance.poll_id
         print("inside_poll_edit_extra")
         context = CONTEXT 
+        context["user"] = request.user
 
         if Poll.objects.is_poll_expired(poll_id):
             messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
@@ -146,6 +151,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
 
         if request.method=="GET":
             form = PollExtraCountForm(instance=poll_extra_count_instance)
+            context["user"] = request.user
             context['form'] = form
             context['poll'] = poll_extra_count_instance.poll
             return render(request,"edit_poll_extra_count.html",context)
@@ -155,6 +161,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
             form = PollExtraCountForm(data=request.POST, instance=poll_extra_count_instance)
             if form.is_valid():
                 form.save()
+                context["user"] = request.user
                 context["form"] = form
                 return HttpResponseRedirect(f"{CONTEXT['basic_url']}polls/poll_extra_count?poll_id={poll_id}")
             context["error"] = "An error occured while submitting your response!"
@@ -165,6 +172,7 @@ class PollModelViewSet(TokenAuthRequiredMixin,ModelViewSet):
         poll_extra_count_id = request.query_params.get('id')
         poll_extra_count_instance = get_object_or_404(PollExtraCount,pk=poll_extra_count_id)
         context = CONTEXT
+        context["user"] = request.user
         
         if Poll.objects.is_poll_expired(poll_extra_count_instance.poll.id):
             messages.error(request,"Oops!..The poll ended..Cant perform the action!!")
